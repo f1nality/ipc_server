@@ -9,13 +9,15 @@ class Server : public QObject
     Q_OBJECT
 
 public:
-    Server();
+    Server(quint16 port);
+    ~Server();
     void startListening();
     void stopListening();
     void sendMessage(QString message);
 private:
+    quint16 port;
     QTcpServer *server;
-    QTcpSocket* client;
+    QTcpSocket *client;
 private slots:
     void onAcceptConnection();
     void onStartRead();

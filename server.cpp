@@ -1,13 +1,19 @@
 #include "server.h"
 
-#define PORT 10000
-
-Server::Server()
+Server::Server(quint16 port)
 {
+    this->port = port;
     server = new QTcpServer();
     client = NULL;
 
     connect(server, SIGNAL(newConnection()), this, SLOT(onAcceptConnection()));
+}
+
+Server::~Server()
+{
+    stopListening();
+
+    delete server;
 }
 
 void Server::startListening()
@@ -19,9 +25,9 @@ void Server::startListening()
         return;
     }
 
-    server->listen(QHostAddress::Any, PORT);
+    server->listen(QHostAddress::Any, port);
 
-    emit log(QString("StartListening on port %1").arg(PORT));
+    emit log(QString("StartListening on port %1").arg(port));
     emit serverStatusUpdated(true);
 }
 
