@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLabel>
 #include "server.h"
 
 namespace Ui {
@@ -18,6 +19,7 @@ public:
 private:
     Ui::MainWindow *ui;
     Server *server;
+    void setStatusLabelOnline(QLabel *label, bool status);
     void log(QString message);
 private slots:
     void onStartListeningPushButtonClicked();

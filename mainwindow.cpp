@@ -27,6 +27,15 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::setStatusLabelOnline(QLabel *label, bool status)
+{
+    QString text = (status) ? "online" : "offline";
+    QString styleSheet = (status) ? "QLabel { color: green; }" : "QLabel { color: red; }";
+
+    label->setText(text);
+    label->setStyleSheet(styleSheet);
+}
+
 void MainWindow::log(QString message)
 {
     ui->consoleTextEdit->append(QString("%1").arg(message));
@@ -54,30 +63,12 @@ void MainWindow::onServerLog(QString message)
 
 void MainWindow::onServerStatusUpdated(bool status)
 {
-    if (status)
-    {
-        ui->serverStatusLabel->setText("online");
-        ui->serverStatusLabel->setStyleSheet("QLabel { color: green; }");
-    }
-    else
-    {
-        ui->serverStatusLabel->setText("offline");
-        ui->serverStatusLabel->setStyleSheet("QLabel { color: red; }");
-    }
+    setStatusLabelOnline(ui->serverStatusLabel, status);
 }
 
 void MainWindow::onClientStatusUpdated(bool status)
 {
-    if (status)
-    {
-        ui->clientStatusLabel->setText("online");
-        ui->clientStatusLabel->setStyleSheet("QLabel { color: green; }");
-    }
-    else
-    {
-        ui->clientStatusLabel->setText("offline");
-        ui->clientStatusLabel->setStyleSheet("QLabel { color: red; }");
-    }
+    setStatusLabelOnline(ui->clientStatusLabel, status);
 }
 
 void MainWindow::onSendPushButtonClicked()
