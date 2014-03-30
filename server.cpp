@@ -27,6 +27,11 @@ void Server::startListening()
 
 void Server::stopListening()
 {
+    if (client != NULL)
+    {
+        client->close();
+    }
+
     server->close();
 
     emit log("StopListening");
@@ -76,7 +81,6 @@ void Server::onClientDisconnected()
     }
 
     this->client = NULL;
-
 
     emit log("clientDisconnected");
     emit clientStatusUpdated(false);

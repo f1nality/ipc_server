@@ -6,11 +6,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setFixedSize(this->width(),this->height());
 
     server = new Server();
 
     connect(ui->startListeningPushButton, SIGNAL(clicked()), this, SLOT(onStartListeningPushButtonClicked()));
     connect(ui->stopListeningPushButton, SIGNAL(clicked()), this, SLOT(onStopListeningPushButtonClicked()));
+    connect(ui->clearPushButton, SIGNAL(clicked()), this, SLOT(onClearPushButtonClicked()));
     connect(ui->sendPushButton, SIGNAL(clicked()), this, SLOT(onSendPushButtonClicked()));
 
     connect(server, SIGNAL(log(QString)), this, SLOT(onServerLog(QString)));
@@ -38,6 +40,11 @@ void MainWindow::onStartListeningPushButtonClicked()
 void MainWindow::onStopListeningPushButtonClicked()
 {
     server->stopListening();
+}
+
+void MainWindow::onClearPushButtonClicked()
+{
+    ui->consoleTextEdit->clear();
 }
 
 void MainWindow::onServerLog(QString message)

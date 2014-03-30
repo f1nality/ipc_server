@@ -22,6 +22,7 @@ private:
 private slots:
     void onStartListeningPushButtonClicked();
     void onStopListeningPushButtonClicked();
+    void onClearPushButtonClicked();
     void onSendPushButtonClicked();
     void onServerLog(QString message);
     void onServerStatusUpdated(bool status);
