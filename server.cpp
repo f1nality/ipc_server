@@ -1,11 +1,15 @@
 #include "server.h"
 
-Server::Server(quint16 port)
+Server::Server(quint16 listeningPort, quint16 broadcastPort)
 {
-    this->port = port;
+    this->listeningPort = listeningPort;
+    this->broadcastPort = broadcastPort;
+    broadcastUdpSocket = new QUdpSocket();
+    broadcastTimer = new QTimer();
     server = new QTcpServer();
     client = NULL;
 
+    connect(broadcastTimer, SIGNAL(timeout()), this, SLOT(onSendBroadcastDatagram()));
     connect(server, SIGNAL(newConnection()), this, SLOT(onAcceptConnection()));
 }
 
@@ -13,6 +17,8 @@ Server::~Server()
 {
     stopListening();
 
+    delete broadcastUdpSocket;
+    delete broadcastTimer;
     delete server;
 }
 
@@ -25,9 +31,10 @@ void Server::startListening()
         return;
     }
 
-    server->listen(QHostAddress::Any, port);
+    broadcastTimer->start(1000);
+    server->listen(QHostAddress::Any, listeningPort);
 
-    emit log(QString("StartListening on port %1").arg(port));
+    emit log(QString("StartListening on port %1, broadcasting on port %2").arg(listeningPort).arg(broadcastPort));
     emit serverStatusUpdated(true);
 }
 
@@ -38,10 +45,17 @@ void Server::stopListening()
         client->close();
     }
 
+    broadcastTimer->stop();
     server->close();
 
     emit log("StopListening");
     emit serverStatusUpdated(false);
+}
+
+void Server::onSendBroadcastDatagram()
+{
+    QByteArray datagram = "IPC_SERVER_BROADCAST_MESSAGE";
+    broadcastUdpSocket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, broadcastPort);
 }
 
 void Server::onAcceptConnection()

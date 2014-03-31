@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setFixedSize(this->width(),this->height());
 
-    server = new Server(10000);
+    server = new Server(10000, 10001);
 
     connect(ui->startListeningPushButton, SIGNAL(clicked()), this, SLOT(onStartListeningPushButtonClicked()));
     connect(ui->stopListeningPushButton, SIGNAL(clicked()), this, SLOT(onStopListeningPushButtonClicked()));
