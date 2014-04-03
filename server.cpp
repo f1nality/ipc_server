@@ -54,8 +54,21 @@ void Server::stopListening()
 
 void Server::onSendBroadcastDatagram()
 {
-    QByteArray datagram = "IPC_SERVER_BROADCAST_MESSAGE";
-    broadcastUdpSocket->writeDatagram(datagram.data(), datagram.size(), QHostAddress::Broadcast, broadcastPort);
+    QList<QNetworkInterface> interfaces = QNetworkInterface::allInterfaces();
+
+    for (int i = 0; i < interfaces.size(); i++)
+    {
+        QList<QNetworkAddressEntry> addresses = interfaces[i].addressEntries();
+
+        for (int j = 0; j < addresses.size(); j++)
+        {
+            if ((addresses[j].ip().protocol() == QAbstractSocket::IPv4Protocol) && (addresses[j].broadcast().toString() != ""))
+            {
+                QByteArray datagram = "IPC_SERVER_BROADCAST_MESSAGE";
+                broadcastUdpSocket->writeDatagram(datagram.data(), datagram.size(), addresses[j].broadcast(), broadcastPort);
+            }
+        }
+    }
 }
 
 void Server::onAcceptConnection()
