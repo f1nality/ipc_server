@@ -1,3 +1,3 @@
 ipc_server
 ==========
-QT-based socket server
+QT-based socket server with IP broadcasting
